@@ -1,6 +1,8 @@
-# 🧠 IA Bidirectionnelle - Jeu d'Apprentissage Mutuel
+# 🧠 DansMaTête
 
-Un jeu innovant qui révolutionne l'interaction avec l'intelligence artificielle par l'**inversion des rôles** et l'**apprentissage mutuel**.
+**Jeu de devinettes révolutionnaire où vous défiez une IA !**
+
+Qui devine le mieux ? Vous ou l'intelligence artificielle ? Dans **DansMaTête**, les rôles s'inversent dans un duel mental passionnant !
 
 ## 🎯 Concept Révolutionnaire
 
