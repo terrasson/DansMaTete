@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Jeu d'IA bidirectionnelle - Apprentissage mutuel par inversion des rôles">
+    <meta name="keywords" content="IA, intelligence artificielle, jeu éducatif, apprentissage mutuel">
+    <meta name="author" content="Terrasson">
+    
+    <title>IA Bidirectionnelle - Apprentissage Mutuel</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+    
+    <!-- Styles CSS -->
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+
+<body>
+    <div class="game-container">
+        <div class="ai-brain">🧠</div>
+
+        <!-- ÉCRAN DE SÉLECTION DU MODE -->
+        <div id="mode-selection" class="mode-selection">
+            <h1>IA Bidirectionnelle</h1>
+            <p class="subtitle">Apprentissage mutuel par inversion des rôles</p>
+            
+            <div class="instructions">
+                <h3>🎯 Révolution de l'apprentissage :</h3>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li><strong>Mode 1 - L'IA devine :</strong> Vous pensez à quelque chose, l'IA pose des questions</li>
+                    <li><strong>Mode 2 - Vous devinez :</strong> L'IA pense à quelque chose, vous posez des questions</li>
+                    <li><strong>Apprentissage mutuel :</strong> L'IA apprend de votre façon de questionner</li>
+                    <li><strong>Interface de debug :</strong> Analysez le processus de réflexion en temps réel</li>
+                    <li><strong>Amélioration continue :</strong> L'IA s'améliore à chaque partie</li>
+                </ul>
+            </div>
+
+            <button class="debug-toggle" onclick="toggleDebug()">🔧 Activer/Désactiver le Mode Debug</button>
+            
+            <div class="mode-selector">
+                <button class="mode-button mode-ai-guesses" onclick="startAIGuessing()">
+                    🤖 L'IA DEVINE<br>
+                    <small>Je pense à quelque chose</small>
+                </button>
+                <button class="mode-button mode-human-guesses" onclick="startHumanGuessing()">
+                    🧠 JE DEVINE<br>
+                    <small>L'IA pense à quelque chose</small>
+                </button>
+            </div>
+        </div>
+
+        <!-- MODE: L'IA DEVINE -->
+        <div id="ai-guessing-mode" class="hidden">
+            <h1>🤖 L'IA tente de deviner</h1>
+            <button class="back-btn" onclick="backToModeSelection()">← Retour</button>
+            
+            <div class="game-status" id="ai-game-status">
+                🎯 Pensez à quelque chose de précis. L'IA va vous poser des questions.
+            </div>
+            
+            <div class="question-container">
+                <div id="ai-question" style="font-size: 1.3em; margin-bottom: 20px;">
+                    Prêt ? Cliquez sur "Commencer" pour que l'IA commence à deviner !
+                </div>
+                <div class="buttons" id="ai-answer-buttons">
+                    <button class="send-btn" onclick="startAIQuestioning()">Commencer</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODE: VOUS DEVINEZ -->
+        <div id="human-guessing-mode" class="hidden">
+            <h1>🧠 Essayez de deviner</h1>
+            <button class="back-btn" onclick="backToModeSelection()">← Retour</button>
+            
+            <div class="game-status" id="human-game-status">
+                🎯 L'IA a choisi quelque chose. Posez-lui des questions !
+                <div style="margin-top: 10px;">
+                    <button class="reveal-btn" onclick="revealSecret()">👁️ RÉVÉLER LE SECRET</button>
+                    <button class="debug-toggle" onclick="toggleRealTimeDebug()">🔍 Réflexion Temps Réel</button>
+                </div>
+            </div>
+            
+            <div class="ai-secret-panel" id="ai-secret-panel">
+                🤖 L'IA pense à : <span class="thinking-indicator" id="secret-display">...</span>
+            </div>
+            
+            <div class="ai-reasoning" id="ai-reasoning" style="display: none;">
+                <strong>🧠 Réflexion de l'IA en temps réel :</strong>
+                <div id="reasoning-content">En attente de votre première question...</div>
+            </div>
+            
+            <div class="question-container">
+                <input type="text" class="question-input" id="human-question" 
+                       placeholder="Tapez votre question ici... (ex: Est-ce que c'est vivant ?)"
+                       onkeypress="handleQuestionKeyPress(event)">
+                <div class="buttons">
+                    <button class="send-btn" onclick="askAI()">Envoyer la question</button>
+                    <button class="restart-btn" onclick="resetHumanGuessing()">Nouvelle partie</button>
+                </div>
+            </div>
+            
+            <div class="chat-history" id="chat-history">
+                <strong>💬 Historique des questions :</strong>
+                <div id="chat-messages"></div>
+            </div>
+        </div>
+
+        <!-- PANNEAU DE DEBUG (visible dans les deux modes) -->
+        <div id="debug-panel" class="debug-panel hidden">
+            <strong>🔧 DEBUG - Analyse en temps réel :</strong>
+            <div id="debug-content">Initialisation du système de debug...</div>
+        </div>
+        
+        <!-- PANNEAU DE CONNAISSANCES IA (visible dans les deux modes) -->
+        <div id="ai-knowledge-panel" class="ai-knowledge hidden">
+            <strong>🧠 Connaissances IA acquises :</strong>
+            <div id="knowledge-content">Aucune connaissance encore acquise...</div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="assets/script.js"></script>
+</body>
+</html> 
