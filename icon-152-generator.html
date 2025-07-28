@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur Icône iOS 152x152 - DansMaTête</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f0f0f0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .icon-preview {
+            margin: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .size-label {
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #333;
+            font-size: 18px;
+        }
+        
+        .icon-container {
+            border: 3px solid #ddd;
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        button {
+            margin: 15px;
+            padding: 20px 30px;
+            background: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+        }
+        
+        button:hover {
+            background: #0056CC;
+            transform: translateY(-2px);
+        }
+        
+        .warning {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border: 2px solid #ffd700;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            max-width: 700px;
+            text-align: center;
+        }
+        
+        .problem {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            border: 2px solid #dc3545;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            max-width: 700px;
+        }
+    </style>
+</head>
+<body>
+    <h1>📱 Générateur Icône iOS 152x152 - DansMaTête</h1>
+    
+    <div class="problem">
+        <h3>🚨 Problème identifié :</h3>
+        <p><strong>iOS utilise l'icône 152x152 sur certains appareils</strong><br>
+        Mais votre icône 152x152 a encore un <strong>fond blanc/transparent</strong> !</p>
+    </div>
+    
+    <div class="warning">
+        <h3>✅ Solution :</h3>
+        <p>Cette nouvelle icône 152x152 aura le <strong>même fond sombre</strong> que votre 180x180 !</p>
+    </div>
+    
+    <!-- Icône 152x152 avec fond sombre -->
+    <div class="icon-preview">
+        <div class="size-label">📱 iPhone/iPad - Icône 152x152 avec fond sombre</div>
+        <div class="icon-container">
+            <canvas id="canvas-152" width="152" height="152" style="border-radius: 17px;"></canvas>
+        </div>
+    </div>
+    
+    <div style="margin-top: 30px; text-align: center;">
+        <button onclick="downloadCanvas('canvas-152', 'ios-icon-152x152-FIXED.png')">
+            📱 Télécharger 152x152 avec Fond Sombre
+        </button>
+    </div>
+    
+    <div class="warning">
+        <h3>📋 Instructions :</h3>
+        <ol style="text-align: left; max-width: 500px;">
+            <li>Téléchargez la nouvelle icône <strong>152x152-FIXED</strong></li>
+            <li>Remplacez <code>assets/icons/ios-icon-152x152.png</code></li>
+            <li>Renommez en supprimant "-FIXED"</li>
+            <li>Push sur GitHub !</li>
+        </ol>
+        <p><strong>🎯 Résultat :</strong> Plus de fond blanc sur AUCUN appareil iOS !</p>
+    </div>
+    
+    <script>
+        function drawIcon(canvas, size) {
+            const ctx = canvas.getContext('2d');
+            const centerX = size / 2;
+            const centerY = size / 2;
+            
+            // FOND DÉGRADÉ SOMBRE IDENTIQUE (comme 180x180)
+            const bgGradient = ctx.createLinearGradient(0, 0, size, size);
+            bgGradient.addColorStop(0, '#1a1a2e');
+            bgGradient.addColorStop(0.5, '#16213e');
+            bgGradient.addColorStop(1, '#0f3460');
+            
+            // Rectangle de fond avec coins arrondis (proportionnel)
+            const cornerRadius = size * 0.11; // Même proportion que 180x180
+            ctx.fillStyle = bgGradient;
+            roundRect(ctx, 0, 0, size, size, cornerRadius);
+            ctx.fill();
+            
+            // Cercle principal du cerveau (même proportion)
+            const brainRadius = size * 0.31; 
+            const brainGradient = ctx.createLinearGradient(
+                centerX - brainRadius, centerY - brainRadius,
+                centerX + brainRadius, centerY + brainRadius
+            );
+            brainGradient.addColorStop(0, '#667eea');
+            brainGradient.addColorStop(0.5, '#764ba2');
+            brainGradient.addColorStop(1, '#f093fb');
+            
+            ctx.fillStyle = brainGradient;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, brainRadius, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Bordure brillante
+            ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Particules IA clignotantes
+            drawParticles(ctx, size);
+            
+            // Emoji cerveau (même proportion)
+            const fontSize = size * 0.28; 
+            ctx.font = `${fontSize}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = 'white';
+            ctx.fillText('🧠', centerX, centerY + fontSize * 0.1);
+            
+            // Texte "IA" en bas
+            const smallFont = size * 0.067; 
+            ctx.font = `bold ${smallFont}px Arial`;
+            ctx.fillStyle = 'rgba(255,255,255,0.9)';
+            ctx.fillText('IA', centerX, centerY + brainRadius + smallFont * 2);
+        }
+        
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+        
+        function drawParticles(ctx, size) {
+            const particles = [
+                {x: size * 0.25, y: size * 0.25, r: size * 0.017},
+                {x: size * 0.75, y: size * 0.33, r: size * 0.011},
+                {x: size * 0.25, y: size * 0.72, r: size * 0.014},
+                {x: size * 0.75, y: size * 0.75, r: size * 0.017}
+            ];
+            
+            ctx.fillStyle = '#64ffda';
+            particles.forEach(p => {
+                ctx.globalAlpha = 0.8;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, 2 * Math.PI);
+                ctx.fill();
+            });
+            ctx.globalAlpha = 1;
+        }
+        
+        function downloadCanvas(canvasId, filename) {
+            const canvas = document.getElementById(canvasId);
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png', 1.0);
+            link.click();
+            
+            alert('🎉 Icône 152x152 avec fond sombre téléchargée !\n\n' +
+                  '📋 Étapes :\n' +
+                  '1. Remplacez assets/icons/ios-icon-152x152.png\n' +
+                  '2. Renommez en supprimant "-FIXED"\n' +
+                  '3. Push sur GitHub !\n\n' +
+                  '✅ Plus de fond blanc sur iOS !');
+        }
+        
+        // Dessiner l'icône au chargement
+        window.onload = function() {
+            drawIcon(document.getElementById('canvas-152'), 152);
+        };
+    </script>
+</body>
+</html> 
