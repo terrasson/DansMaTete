@@ -17,7 +17,7 @@ class BidirectionalAI {
         this.humanQuestionCount = 0;
         this.learnedPatterns = [];
         
-        // Base de données des secrets que l'IA peut choisir
+        // Base de données des secrets que l'IA peut choisir (ÉLARGIE!)
         this.aiSecrets = [
             { item: "chat", category: "animal", characteristics: ["vivant", "domestique", "4_pattes", "poils", "miaule"] },
             { item: "voiture", category: "objet", characteristics: ["artificiel", "transport", "roues", "métal", "moteur"] },
@@ -26,8 +26,18 @@ class BidirectionalAI {
             { item: "téléphone", category: "objet", characteristics: ["électronique", "portable", "communication", "écran", "artificiel"] },
             { item: "chien", category: "animal", characteristics: ["vivant", "domestique", "4_pattes", "poils", "aboie"] },
             { item: "avion", category: "objet", characteristics: ["artificiel", "transport", "vole", "grand", "métal"] },
-            { item: "livre", category: "objet", characteristics: ["artificiel", "papier", "lire", "rectangulaire", "léger"] }
+            { item: "livre", category: "objet", characteristics: ["artificiel", "papier", "lire", "rectangulaire", "léger"] },
+            // NOUVEAUX OBJETS AJOUTÉS:
+            { item: "guitare", category: "objet", characteristics: ["artificiel", "musique", "cordes", "bois", "léger"] },
+            { item: "oiseau", category: "animal", characteristics: ["vivant", "ailes", "vole", "chante", "plumes"] },
+            { item: "fleur", category: "vivant", characteristics: ["vivant", "coloré", "parfum", "petite", "nature"] },
+            { item: "vélo", category: "objet", characteristics: ["artificiel", "transport", "2_roues", "pédale", "écologique"] },
+            { item: "poisson", category: "animal", characteristics: ["vivant", "eau", "nage", "écailles", "muet"] },
+            { item: "table", category: "objet", characteristics: ["artificiel", "meuble", "bois", "4_pieds", "maison"] },
+            { item: "soleil", category: "nature", characteristics: ["chaud", "lumière", "grand", "jaune", "ciel"] },
+            { item: "montre", category: "objet", characteristics: ["artificiel", "temps", "portable", "métal", "petit"] }
         ];
+        this.lastSecret = null; // Pour éviter les répétitions
     }
 
     // =====================================
@@ -112,9 +122,15 @@ class BidirectionalAI {
         this.questionHistory = [];
         this.realTimeDebug = false;
         
-        // L'IA choisit un secret
-        this.currentSecret = this.aiSecrets[Math.floor(Math.random() * this.aiSecrets.length)];
-        this.debugLog(`🤖 L'IA a choisi: ${this.currentSecret.item}`);
+        // L'IA choisit un secret (évite les répétitions)
+        let newSecret;
+        do {
+            newSecret = this.aiSecrets[Math.floor(Math.random() * this.aiSecrets.length)];
+        } while (this.lastSecret && newSecret.item === this.lastSecret.item && this.aiSecrets.length > 1);
+        
+        this.currentSecret = newSecret;
+        this.lastSecret = newSecret;
+        this.debugLog(`🤖 L'IA a choisi: ${this.currentSecret.item} (${this.aiSecrets.length} choix possibles)`);
         
         // Masquer le secret par défaut
         document.getElementById('secret-display').innerHTML = 
@@ -122,6 +138,11 @@ class BidirectionalAI {
         
         // Initialiser l'interface de réflexion
         this.updateReasoningDisplay("En attente de votre première question...");
+        
+        // Debug: Afficher temporairement le choix (pour vérifier la variété)
+        if (this.debugMode) {
+            console.log(`🎲 DEBUG: L'IA a choisi "${this.currentSecret.item}" parmi ${this.aiSecrets.length} possibilités`);
+        }
     }
 
     processHumanQuestion(question) {
