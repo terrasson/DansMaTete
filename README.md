@@ -142,7 +142,28 @@ Ce jeu démontre :
 
 ## 📝 Licence
 
-Ce projet est libre d'utilisation à des fins éducatives et de démonstration.
+**Tous droits réservés** - Ce projet est protégé par le droit d'auteur.
+
+### ⚖️ **Conditions d'Utilisation**
+- **Usage personnel** : Autorisé pour tester et découvrir le jeu
+- **Usage éducatif** : Autorisé pour étudier le code et comprendre les concepts
+- **Usage commercial** : **INTERDIT** sans autorisation écrite
+- **Redistribution** : **INTERDITE** sans autorisation écrite
+- **Modification** : **INTERDITE** sans autorisation écrite
+
+### 📧 **Demande d'Autorisation**
+Pour toute utilisation au-delà de l'usage personnel/éducatif, veuillez me contacter :
+- **GitHub** : [@terrasson](https://github.com/terrasson)
+- **Email** : Utilisez la section "Issues" du repository pour me contacter
+
+### 🚫 **Utilisations Interdites Sans Autorisation**
+- Utilisation commerciale ou à des fins lucratives
+- Redistribution du code source ou de l'application
+- Modification et republication du projet
+- Intégration dans d'autres projets commerciaux
+- Utilisation du nom "IA Bidirectionnelle" pour d'autres projets
+
+**⚠️ Toute violation de ces conditions pourra faire l'objet de poursuites légales.**
 
 ## 👨‍💻 Auteur
 
