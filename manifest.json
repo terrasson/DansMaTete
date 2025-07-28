@@ -1,0 +1,39 @@
+{
+  "name": "IA Bidirectionnelle - Apprentissage Mutuel",
+  "short_name": "IA Bidirect",
+  "description": "Jeu d'IA innovant avec apprentissage mutuel par inversion des rôles",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1a2e",
+  "theme_color": "#1a1a2e",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "categories": ["games", "education", "entertainment"],
+  "icons": [
+    {
+      "src": "assets/icons/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icons/ios-icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icons/ios-icon-180x180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "assets/icons/ios-icon-180x180.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "lang": "fr",
+  "dir": "ltr"
+} 
