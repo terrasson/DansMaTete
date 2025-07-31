@@ -180,16 +180,30 @@ class BidirectionalAI {
     }
 
     async generateGeminiAnswer(question) {
-        const prompt = `Tu es une IA dans un jeu de devinettes. Je pense à "${this.currentSecret.item}".
-        
-Question du joueur: "${question}"
+        const prompt = `Tu es une IA experte dans un jeu de devinettes. 
 
-Tu dois répondre UNIQUEMENT par "oui" ou "non" selon que la question s'applique ou non à "${this.currentSecret.item}".
+JE PENSE À: "${this.currentSecret.item}"
 
-Réponse:`;
+QUESTION DU JOUEUR: "${question}"
+
+INSTRUCTIONS:
+- Réponds UNIQUEMENT par "oui" ou "non"
+- Base-toi sur les caractéristiques réelles de "${this.currentSecret.item}"
+- Sois logique et cohérent
+
+Exemples pour un vélo:
+- "Est-ce fabriqué par les humains?" → oui
+- "Est-ce qu'un humain peut en avoir un?" → oui
+- "Est-ce que c'est vivant?" → non
+
+RÉPONSE POUR "${this.currentSecret.item}":`;
 
         try {
             const geminiResponse = await askGeminiAI(prompt);
+            
+            // Debug: afficher la réponse de Gemini
+            console.log(`🤖 Gemini répond pour "${this.currentSecret.item}" à "${question}": "${geminiResponse}"`);
+            
             if (geminiResponse && geminiResponse.toLowerCase().includes('oui')) {
                 return 'oui';
             } else {
