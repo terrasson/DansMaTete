@@ -38,6 +38,7 @@ class BidirectionalAI {
             { item: "montre", category: "objet", characteristics: ["artificiel", "temps", "portable", "métal", "petit"] }
         ];
         this.lastSecret = null; // Pour éviter les répétitions
+        this.useGemini = false; // Mode Gemini désactivé par défaut
     }
 
     // =====================================
@@ -145,27 +146,59 @@ class BidirectionalAI {
         }
     }
 
-    processHumanQuestion(question) {
+        async processHumanQuestion(question) {
         this.humanQuestionCount++;
-        let answer = this.generateAIAnswer(question);
-        let reasoning = this.generateReasoning(question, answer);
-        
-        this.questionHistory.push({ 
-            question: question, 
-            answer: answer, 
+        let answer;
+        let reasoning;
+
+        if (this.useGemini) {
+            // Utiliser Gemini pour générer la réponse
+            answer = await this.generateGeminiAnswer(question);
+            reasoning = `🤖 Réponse générée par Gemini IA:\nQuestion: "${question}"\nRéponse: ${answer.toUpperCase()}`;
+        } else {
+            // Utiliser l'IA locale
+            answer = this.generateAIAnswer(question);
+            reasoning = this.generateReasoning(question, answer);
+        }
+
+        this.questionHistory.push({
+            question: question,
+            answer: answer,
             reasoning: reasoning,
-            asker: 'human' 
+            asker: 'human'
         });
-        
+
         this.analyzeLearningPattern(question, answer);
-        this.debugLog(`Humain a demandé: "${question}" → Réponse: ${answer}`);
+        this.debugLog(`Humain a demandé: "${question}" → Réponse: ${answer} (${this.useGemini ? 'Gemini' : 'Local'})`);
         
         // Mettre à jour la réflexion en temps réel
         if (this.realTimeDebug) {
             this.updateReasoningDisplay(reasoning);
         }
-        
+
         return answer;
+    }
+
+    async generateGeminiAnswer(question) {
+        const prompt = `Tu es une IA dans un jeu de devinettes. Je pense à "${this.currentSecret.item}".
+        
+Question du joueur: "${question}"
+
+Tu dois répondre UNIQUEMENT par "oui" ou "non" selon que la question s'applique ou non à "${this.currentSecret.item}".
+
+Réponse:`;
+
+        try {
+            const geminiResponse = await askGeminiAI(prompt);
+            if (geminiResponse && geminiResponse.toLowerCase().includes('oui')) {
+                return 'oui';
+            } else {
+                return 'non';
+            }
+        } catch (error) {
+            console.error('Erreur Gemini, fallback vers IA locale:', error);
+            return this.generateAIAnswer(question);
+        }
     }
 
     // =====================================
@@ -605,20 +638,29 @@ function handleQuestionKeyPress(event) {
     }
 }
 
-function askAI() {
+async function askAI() {
     let questionInput = document.getElementById('human-question');
     let question = questionInput.value.trim();
-    
+
     if (!question) {
         alert('Veuillez taper une question !');
         return;
     }
     
-    let answer = bidirectionalAI.processHumanQuestion(question);
+    // Désactiver le bouton pendant le traitement
+    let sendButton = document.querySelector('.send-btn');
+    sendButton.disabled = true;
+    sendButton.textContent = 'Réflexion...';
     
+    let answer = await bidirectionalAI.processHumanQuestion(question);
+
+    // Réactiver le bouton
+    sendButton.disabled = false;
+    sendButton.textContent = 'Envoyer la question';
+
     // Vérifier si le joueur a trouvé la bonne réponse
     let isCorrectGuess = checkIfCorrectGuess(question, bidirectionalAI.currentSecret);
-    
+
     // Ajouter à l'historique
     let chatMessages = document.getElementById('chat-messages');
     chatMessages.innerHTML += `
@@ -626,20 +668,20 @@ function askAI() {
             <strong>Vous:</strong> ${question}
         </div>
         <div class="chat-message ai-message">
-            <strong>IA:</strong> ${answer.toUpperCase()}
+            <strong>IA:</strong> ${answer.toUpperCase()} ${bidirectionalAI.useGemini ? '🤖' : '🧠'}
         </div>
     `;
-    
+
     // Si le joueur a trouvé, afficher la victoire
     if (isCorrectGuess) {
         showVictoryMessage(bidirectionalAI.currentSecret, bidirectionalAI.humanQuestionCount);
         return;
     }
-    
+
     // Vider le champ de saisie
     questionInput.value = '';
     questionInput.focus();
-    
+
     // Faire défiler vers le bas
     let chatHistory = document.getElementById('chat-history');
     chatHistory.scrollTop = chatHistory.scrollHeight;
@@ -778,5 +820,47 @@ function toggleRealTimeDebug() {
         reasoningDiv.style.display = 'none';
         event.target.textContent = "🔍 Réflexion Temps Réel";
         event.target.style.background = "linear-gradient(45deg, #34495e, #2c3e50)";
+    }
+}
+
+// =====================================
+// INTÉGRATION IA GEMINI
+// =====================================
+
+async function askGeminiAI(question) {
+    try {
+        const response = await fetch('/api/ai/gemini', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ prompt: question })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Erreur API: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        return data.response;
+    } catch (error) {
+        console.error('Erreur Gemini:', error);
+        return null;
+    }
+}
+
+// Fonction pour basculer le mode Gemini
+function toggleGeminiMode() {
+    bidirectionalAI.useGemini = !bidirectionalAI.useGemini;
+    let button = document.getElementById('gemini-toggle');
+    
+    if (bidirectionalAI.useGemini) {
+        button.textContent = "🤖 Mode Gemini ✅";
+        button.style.background = "linear-gradient(45deg, #4caf50, #388e3c)";
+        alert("Mode Gemini activé ! L'IA utilisera maintenant Gemini pour générer ses réponses.");
+    } else {
+        button.textContent = "🤖 Mode Gemini";
+        button.style.background = "linear-gradient(45deg, #673ab7, #9c27b0)";
+        alert("Mode Gemini désactivé. Retour au mode IA local.");
     }
 } 

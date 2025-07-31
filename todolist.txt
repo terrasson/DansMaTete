@@ -1,0 +1,78 @@
+# 🎯 PLAN D'ACTION - INTEGRATION GEMINI IA
+
+## 📋 ÉTAT ACTUEL
+- ✅ Version main récupérée (version propre et fonctionnelle)
+- ✅ Branche feature/real-ai-integration reset sur main
+- ❌ Fichier .env absent (normal dans main)
+- ❌ Pas de dossier api/ (version originale simple)
+
+## 🎯 OBJECTIFS PRINCIPAUX
+
+### 1. 🧪 TESTER LA VERSION DE BASE
+- [ ] Démarrer le serveur sur la version main propre
+- [ ] Vérifier que les boutons fonctionnent
+- [ ] Confirmer que le jeu de base marche sans IA externe
+
+### 2. 🔧 PRÉPARER L'INFRASTRUCTURE GEMINI
+- [ ] Créer le dossier api/ai/
+- [ ] Créer le fichier api/ai/gemini.js
+- [ ] Créer le fichier .env avec la clé Gemini
+- [ ] Créer le fichier vercel.json pour les fonctions serverless
+
+### 3. 🤖 INTÉGRER L'IA GEMINI
+- [ ] Ajouter la configuration Gemini dans assets/script.js
+- [ ] Créer les fonctions d'appel API vers Gemini
+- [ ] Modifier l'interface pour permettre le choix IA/mode local
+- [ ] Tester l'intégration étape par étape
+
+### 4. 🧹 FINITION ET TESTS
+- [ ] Tester tous les modes de jeu
+- [ ] Vérifier la gestion d'erreurs
+- [ ] S'assurer du fallback en mode local si Gemini fail
+- [ ] Documenter les nouvelles fonctionnalités
+
+## 🏗️ ARCHITECTURE CIBLE
+
+```
+DansMaTete/
+├── index.html                 (interface principale)
+├── manifest.json             (PWA)
+├── .env                      (clés API - à créer)
+├── vercel.json              (config déploiement - à créer)
+├── assets/
+│   ├── script.js            (logique jeu + intégration IA)
+│   ├── styles.css           (CSS existant)
+│   └── icons/               (icônes PWA)
+└── api/
+    └── ai/
+        └── gemini.js        (fonction serverless Gemini - à créer)
+```
+
+## ⚠️ POINTS D'ATTENTION
+1. Garder la simplicité de la version main
+2. Ne pas casser le mode de jeu local existant
+3. Intégration progressive (étape par étape)
+4. Tests fréquents pour éviter les régressions
+5. Gestion propre des erreurs API
+
+## ✅ ÉTAT D'AVANCEMENT
+
+### TERMINÉ
+- [x] Version main récupérée et fonctionnelle
+- [x] Infrastructure Gemini créée (api/ai/gemini.js)
+- [x] Configuration Vercel (vercel.json)
+- [x] Interface utilisateur modifiée (bouton Gemini)
+- [x] Logique d'intégration implémentée
+- [x] Gestion async/await ajoutée
+- [x] Fallback automatique vers IA locale
+- [x] Instructions de configuration créées
+
+### À FAIRE PAR L'UTILISATEUR
+- [ ] Créer le fichier .env avec la clé Gemini
+- [ ] Redémarrer le serveur
+- [ ] Tester le mode Gemini
+
+## 🚀 PROCHAINES ÉTAPES
+1. Suivre les instructions dans SETUP-GEMINI.md
+2. Tester que les boutons fonctionnent
+3. Activer le mode Gemini et tester
