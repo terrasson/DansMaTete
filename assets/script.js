@@ -150,15 +150,24 @@ class BidirectionalAI {
         this.humanQuestionCount++;
         let answer;
         let reasoning;
+        let actualAI = 'Local';
 
         if (this.useGemini) {
-            // Utiliser Gemini pour générer la réponse
-            answer = await this.generateGeminiAnswer(question);
-            reasoning = `🤖 Réponse générée par Gemini IA:\nQuestion: "${question}"\nRéponse: ${answer.toUpperCase()}`;
+            // Tenter d'utiliser Gemini
+            const geminiResult = await this.generateGeminiAnswer(question);
+            answer = geminiResult.answer;
+            actualAI = geminiResult.usedGemini ? 'Gemini' : 'Local';
+            
+            if (geminiResult.usedGemini) {
+                reasoning = `🤖 Réponse générée par Gemini IA:\nQuestion: "${question}"\nRéponse: ${answer.toUpperCase()}`;
+            } else {
+                reasoning = `⚠️ Gemini échoué - IA locale utilisée:\nQuestion: "${question}"\nRéponse: ${answer.toUpperCase()}`;
+            }
         } else {
             // Utiliser l'IA locale
             answer = this.generateAIAnswer(question);
             reasoning = this.generateReasoning(question, answer);
+            actualAI = 'Local';
         }
 
         this.questionHistory.push({
@@ -169,14 +178,14 @@ class BidirectionalAI {
         });
 
         this.analyzeLearningPattern(question, answer);
-        this.debugLog(`Humain a demandé: "${question}" → Réponse: ${answer} (${this.useGemini ? 'Gemini' : 'Local'})`);
+        this.debugLog(`Humain a demandé: "${question}" → Réponse: ${answer} (${actualAI})`);
         
         // Mettre à jour la réflexion en temps réel
         if (this.realTimeDebug) {
             this.updateReasoningDisplay(reasoning);
         }
 
-        return answer;
+        return { answer: answer, actualAI: actualAI };
     }
 
     async generateGeminiAnswer(question) {
@@ -201,17 +210,22 @@ RÉPONSE POUR "${this.currentSecret.item}":`;
         try {
             const geminiResponse = await askGeminiAI(prompt);
             
-            // Debug: afficher la réponse de Gemini
-            console.log(`🤖 Gemini répond pour "${this.currentSecret.item}" à "${question}": "${geminiResponse}"`);
-            
-            if (geminiResponse && geminiResponse.toLowerCase().includes('oui')) {
-                return 'oui';
+            if (geminiResponse && geminiResponse !== null) {
+                // Gemini a répondu avec succès
+                console.log(`✅ Gemini répond pour "${this.currentSecret.item}" à "${question}": "${geminiResponse}"`);
+                
+                const answer = geminiResponse.toLowerCase().includes('oui') ? 'oui' : 'non';
+                return { answer: answer, usedGemini: true };
             } else {
-                return 'non';
+                // Gemini a échoué, fallback vers IA locale
+                console.error('❌ Gemini a échoué, utilisation de l\'IA locale');
+                const answer = this.generateAIAnswer(question);
+                return { answer: answer, usedGemini: false };
             }
         } catch (error) {
-            console.error('Erreur Gemini, fallback vers IA locale:', error);
-            return this.generateAIAnswer(question);
+            console.error('❌ Erreur Gemini, fallback vers IA locale:', error);
+            const answer = this.generateAIAnswer(question);
+            return { answer: answer, usedGemini: false };
         }
     }
 
@@ -666,7 +680,9 @@ async function askAI() {
     sendButton.disabled = true;
     sendButton.textContent = 'Réflexion...';
     
-    let answer = await bidirectionalAI.processHumanQuestion(question);
+    let result = await bidirectionalAI.processHumanQuestion(question);
+    let answer = result.answer;
+    let actualAI = result.actualAI;
 
     // Réactiver le bouton
     sendButton.disabled = false;
@@ -675,14 +691,15 @@ async function askAI() {
     // Vérifier si le joueur a trouvé la bonne réponse
     let isCorrectGuess = checkIfCorrectGuess(question, bidirectionalAI.currentSecret);
 
-    // Ajouter à l'historique
+    // Ajouter à l'historique avec la vraie icône
+    let aiIcon = actualAI === 'Gemini' ? '🤖' : '🧠';
     let chatMessages = document.getElementById('chat-messages');
     chatMessages.innerHTML += `
         <div class="chat-message human-message">
             <strong>Vous:</strong> ${question}
         </div>
         <div class="chat-message ai-message">
-            <strong>IA:</strong> ${answer.toUpperCase()} ${bidirectionalAI.useGemini ? '🤖' : '🧠'}
+            <strong>IA:</strong> ${answer.toUpperCase()} ${aiIcon}
         </div>
     `;
 
